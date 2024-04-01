@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -85,6 +87,7 @@ public class UI2048 {
 		frame.setResizable(false); // Evito que lo puedan redimensionar
 
 		this.ranking = new ArrayList<>();
+		
 
 		// Panel principal
 		JPanel panelPrincipal = new JPanel();
@@ -117,6 +120,8 @@ public class UI2048 {
 			}
 		});
 		panelBotones.add(btnJugar);
+		
+		cargarRanking();
 
 		// Botón Ranking
 		JButton btnRanking = new JButton("Ranking");
@@ -139,6 +144,7 @@ public class UI2048 {
 		btnSalir.setFont(new Font("Tahoma", Font.BOLD, 20)); // Fuente más grande
 		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				guardarRanking();
 				System.exit(0);
 			}
 		});
@@ -148,6 +154,13 @@ public class UI2048 {
 		frame.setLocationRelativeTo(null);
 		// Mostrar la ventana
 		frame.setVisible(true);
+		
+		frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                guardarRanking(); // Guardar el ranking al cerrar la ventana
+            }
+        });
 	}
 
 	private void iniciarJuego() {
@@ -291,6 +304,13 @@ public class UI2048 {
 		});
 
 		frame.setVisible(true);
+		
+		frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                guardarRanking(); // Guardar el ranking al cerrar la ventana
+            }
+        });
 	}
 
 	// ACTUALIZACION DE LOS VALORES DE LAS CELDAS
@@ -366,9 +386,6 @@ public class UI2048 {
 	}
 
 	private void mostrarRanking() {
-		// Cargar el ranking
-		cargarRanking();
-
 		// Ordenar la lista en orden descendente según los valores (puntajes)
 		ranking.sort(Map.Entry.<String, Integer>comparingByValue().reversed());
 
@@ -389,9 +406,6 @@ public class UI2048 {
 		Map.Entry<String, Integer> ultimoJugador = new AbstractMap.SimpleEntry<>(nombre, puntaje);
 		ranking.add(ultimoJugador);
 
-		// Ordenar la lista en orden descendente según los valores (puntajes)
-		Collections.sort(ranking, Map.Entry.<String, Integer>comparingByValue().reversed());
-
 		// Mantener solo al top 1 y al último jugador si el ranking tiene más de 5
 		// integrantes
 		if (ranking.size() > 5) {
@@ -400,12 +414,14 @@ public class UI2048 {
 			ranking.add(top1);
 			ranking.add(ultimoJugador);
 		}
-
 		guardarRanking(); // Guardar el ranking actualizado
 	}
 
 	private void consultarNombreParaRanking() {
 		String nombreJugador = JOptionPane.showInputDialog(frame, "Ingresa tu nombre:");
+		if(nombreJugador==null) {
+			System.exit(0);
+		}
 		agregarAlRanking(nombreJugador, juego2048.obtenerPuntosInt());
 		guardarRanking();
 	}
