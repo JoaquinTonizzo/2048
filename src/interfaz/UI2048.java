@@ -24,7 +24,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.awt.BorderLayout;
@@ -158,7 +157,7 @@ public class UI2048 {
 		frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                guardarRanking(); // Guardar el ranking al cerrar la ventana
+                guardarRanking(); 
             }
         });
 	}
@@ -199,7 +198,7 @@ public class UI2048 {
 		panelPuntaje.add(puntaje);
 		puntaje.setHorizontalAlignment(SwingConstants.CENTER);
 
-		valorPuntaje = new JLabel(juego2048.obtenerPuntos());
+		valorPuntaje = new JLabel(juego2048.obtenerPuntosString());
 		valorPuntaje.setForeground(new Color(255, 255, 255));
 		valorPuntaje.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panelPuntaje.add(valorPuntaje);
@@ -308,7 +307,7 @@ public class UI2048 {
 		frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                guardarRanking(); // Guardar el ranking al cerrar la ventana
+            	consultarNombreParaRanking();
             }
         });
 	}
@@ -328,7 +327,7 @@ public class UI2048 {
 				actualizarColorEtiqueta(tableroIG[fila][columna], tablero[fila][columna]);
 			}
 		}
-		valorPuntaje.setText(juego2048.obtenerPuntos());
+		valorPuntaje.setText(juego2048.obtenerPuntosString());
 		nroTurno.setText(juego2048.obtenerTurno());
 	}
 

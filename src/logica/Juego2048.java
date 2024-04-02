@@ -187,7 +187,7 @@ public class Juego2048 {
 		puntos += valor; // Sumar puntos dependiendo del valor de la combinación
 	}
 
-	public String obtenerPuntos() {
+	public String obtenerPuntosString() {
 		return puntos.toString();
 	}
 	
