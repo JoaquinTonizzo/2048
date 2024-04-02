@@ -352,11 +352,11 @@ public class UI2048 {
 		int choice = JOptionPane.showOptionDialog(frame, mensaje, titulo, JOptionPane.YES_NO_OPTION, tipoMensaje, null,
 				new String[] { "Volver a jugar", "Salir" }, "Volver a jugar");
 		if (choice == JOptionPane.YES_OPTION) {
-			juego2048.reiniciarJuego();
+			consultarNombreParaRanking();
+			juego2048.reiniciarJuego();			
 			valorPuntaje.setText("0");
 			nroTurno.setText("0");
 			actualizarValores(juego2048.obtenerTablero());
-			consultarNombreParaRanking();
 		} else {
 			consultarNombreParaRanking();
 			System.exit(0);
