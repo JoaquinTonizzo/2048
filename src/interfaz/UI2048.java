@@ -17,7 +17,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Map;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
