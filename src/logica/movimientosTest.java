@@ -12,15 +12,15 @@ public class movimientosTest {
         int[][] tableroInicial = {
             {0, 16, 2, 8},
             {8, 0, 4, 8},
-            {8, 0, 8, 8},
-            {16, 8, 16, 8}
+            {8, 16, 8, 8},
+            {16, 0, 16, 8}
         };
         juego.tablero = tableroInicial;
         assertTrue(juego.mover(1)); // Mover arriba
         
         int[][] tableroEsperado = {
-            {16, 16, 2, 16},
-            {16, 8, 4, 16},
+            {16, 32, 2, 16},
+            {16, 0, 4, 16},
             {0, 0, 8, 0},
             {0, 0, 16, 0}
         };

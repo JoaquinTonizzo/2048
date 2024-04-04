@@ -81,13 +81,10 @@ public class UI2048 {
 		frame = new JFrame(); // Creo la ventana
 		frame.setTitle("Juego 2048");
 		frame.setBounds(100, 100, 400, 500); // (PosicionX, PosicionY, Ancho, Altura)
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Para que la aplicacion se cierre correctamente cuando
-																// el usuario la quita
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Para que la aplicacion se cierre correctamente cuando el usuario la quita
 		frame.setResizable(false); // Evito que lo puedan redimensionar
-
 		this.ranking = new ArrayList<>();
 		
-
 		// Panel principal
 		JPanel panelPrincipal = new JPanel();
 		panelPrincipal.setBackground(new Color(0xEDE0C8)); // Color 4
@@ -119,9 +116,8 @@ public class UI2048 {
 			}
 		});
 		panelBotones.add(btnJugar);
-		
+	
 		cargarRanking();
-
 		// Botón Ranking
 		JButton btnRanking = new JButton("Ranking");
 		btnRanking.setPreferredSize(new Dimension(150, 50)); // Tamaño ajustado
@@ -181,8 +177,7 @@ public class UI2048 {
 		JPanel panelSuperior = new JPanel();
 		panelSuperior.setPreferredSize(new Dimension(frame.getWidth(), 100)); // Establecer la altura del panel superior
 		panelSuperior.setBackground(new Color(250, 248, 239));
-		frame.getContentPane().add(panelSuperior, BorderLayout.NORTH); // Agrego el panel a la ventana, en la parte
-																		// superior (con borderlayout)
+		frame.getContentPane().add(panelSuperior, BorderLayout.NORTH); // Agrego el panel a la ventana, en la parte superior (con borderlayout)
 		panelSuperior.setLayout(null);
 
 		// PANEL PUNTAJE
@@ -314,8 +309,7 @@ public class UI2048 {
 
 	// ACTUALIZACION DE LOS VALORES DE LAS CELDAS
 	private void actualizarValores(int[][] tablero) {
-		// Recorro el tablero para obtener sus valores y agregarlos a la interfaz
-		// grafica
+		// Recorro el tablero para obtener sus valores y agregarlos a la interfaz grafica
 		for (int fila = 0; fila < 4; fila++) {
 			for (int columna = 0; columna < 4; columna++) {
 				if (tablero[fila][columna] == 0) {
@@ -385,40 +379,48 @@ public class UI2048 {
 	}
 
 	private void mostrarRanking() {
-		// Ordenar la lista en orden descendente según los valores (puntajes)
-		ranking.sort(Map.Entry.<String, Integer>comparingByValue().reversed());
-
 		// Construir la cadena de texto para mostrar el ranking
 		StringBuilder rankingString = new StringBuilder();
 		int position = 1;
 		for (Map.Entry<String, Integer> entry : ranking) {
-			rankingString.append(position).append(". ").append(entry.getKey()).append(": ").append(entry.getValue())
-					.append("\n");
+			rankingString.append(position).append(". ").append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
 			position++;
 		}
-
 		// Mostrar el ranking
 		JOptionPane.showMessageDialog(frame, rankingString.toString(), "Ranking", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private void agregarAlRanking(String nombre, int puntaje) {
-		Map.Entry<String, Integer> ultimoJugador = new AbstractMap.SimpleEntry<>(nombre, puntaje);
-		ranking.add(ultimoJugador);
+	    boolean existeJugador = false;
+	    for (Map.Entry<String, Integer> jugador : ranking) {
+	        if (jugador.getKey().equals(nombre)) {
+	            existeJugador = true;
+	            if (puntaje > jugador.getValue()) {
+	                jugador.setValue(puntaje);
+	            }
+	            break;
+	        }
+	    }
 
-		// Mantener solo al top 1 y al último jugador si el ranking tiene más de 5
-		// integrantes
-		if (ranking.size() > 5) {
-			Map.Entry<String, Integer> top1 = ranking.get(0);
-			ranking.clear();
-			ranking.add(top1);
-			ranking.add(ultimoJugador);
-		}
-		guardarRanking(); // Guardar el ranking actualizado
+	    if (!existeJugador) {
+	        Map.Entry<String, Integer> nuevoJugador = new AbstractMap.SimpleEntry<>(nombre, puntaje);
+	        ranking.add(nuevoJugador);
+	    }
+	    // Ordenamos el ranking por puntaje en orden descendente
+	    ranking.sort(Map.Entry.<String, Integer>comparingByValue().reversed());
+	    
+	    // Mantener solo los primeros 5 jugadores en el ranking
+	    if (ranking.size() > 5) {
+	        ranking = new ArrayList<>(ranking.subList(0, 5));
+	    }
+	    // Guardar el ranking actualizado
+	    guardarRanking();
 	}
+
 
 	private void consultarNombreParaRanking() {
 		String nombreJugador = JOptionPane.showInputDialog(frame, "Ingresa tu nombre:");
-		if(nombreJugador==null) {
+		if(nombreJugador==null || nombreJugador.trim().isEmpty()) {
 			System.exit(0);
 		}
 		agregarAlRanking(nombreJugador, juego2048.obtenerPuntosInt());
