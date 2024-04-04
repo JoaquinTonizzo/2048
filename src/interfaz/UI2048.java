@@ -17,14 +17,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
@@ -34,6 +26,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import logica.Juego2048;
+import logica.Ranking;
 
 public class UI2048 {
 	private JFrame frame;
@@ -42,7 +35,7 @@ public class UI2048 {
 	private JLabel valorPuntaje;
 	private Juego2048 juego2048;
 	private boolean movimientoProcesado;
-	private List<Map.Entry<String, Integer>> ranking;
+	private Ranking ranking;
 
 	private static final Color[] COLORES_NUMEROS = { new Color(0xFFFFFF), // Color 2
 			new Color(0xEDE0C8), // Color 4
@@ -81,13 +74,10 @@ public class UI2048 {
 		frame = new JFrame(); 
 		frame.setTitle("Juego 2048");
 		frame.setBounds(100, 100, 400, 500); // (PosicionX, PosicionY, Ancho, Altura)
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Para que la aplicacion se cierre correctamente cuando
-																// el usuario la quita
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Para que la aplicacion se cierre correctamente cuando el usuario la quita
 		frame.setResizable(false); // Evito que lo puedan redimensionar
-
-		this.ranking = new ArrayList<>();
+		this.ranking = new Ranking();
 		
-
 		// Panel principal
 		JPanel panelPrincipal = new JPanel();
 		panelPrincipal.setBackground(new Color(0xEDE0C8)); // Color 4
@@ -119,9 +109,8 @@ public class UI2048 {
 			}
 		});
 		panelBotones.add(btnJugar);
-		
-		cargarRanking();
-
+	
+		ranking.cargarRanking();
 		// Botón Ranking
 		JButton btnRanking = new JButton("Ranking");
 		btnRanking.setPreferredSize(new Dimension(150, 50)); // Tamaño ajustado
@@ -143,7 +132,7 @@ public class UI2048 {
 		btnSalir.setFont(new Font("Tahoma", Font.BOLD, 20)); // Fuente más grande
 		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				guardarRanking();
+				ranking.guardarRanking();
 				System.exit(0);
 			}
 		});
@@ -157,7 +146,7 @@ public class UI2048 {
 		frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                guardarRanking(); 
+                ranking.guardarRanking(); 
             }
         });
 	}
@@ -181,8 +170,7 @@ public class UI2048 {
 		JPanel panelSuperior = new JPanel();
 		panelSuperior.setPreferredSize(new Dimension(frame.getWidth(), 100)); // Establecer la altura del panel superior
 		panelSuperior.setBackground(new Color(250, 248, 239));
-		frame.getContentPane().add(panelSuperior, BorderLayout.NORTH); // Agrego el panel a la ventana, en la parte
-																		// superior (con borderlayout)
+		frame.getContentPane().add(panelSuperior, BorderLayout.NORTH); // Agrego el panel a la ventana, en la parte superior (con borderlayout)
 		panelSuperior.setLayout(null);
 
 		// PANEL PUNTAJE
@@ -314,8 +302,7 @@ public class UI2048 {
 
 	// ACTUALIZACION DE LOS VALORES DE LAS CELDAS
 	private void actualizarValores(int[][] tablero) {
-		// Recorro el tablero para obtener sus valores y agregarlos a la interfaz
-		// grafica
+		// Recorro el tablero para obtener sus valores y agregarlos a la interfaz grafica
 		for (int fila = 0; fila < 4; fila++) {
 			for (int columna = 0; columna < 4; columna++) {
 				if (tablero[fila][columna] == 0) {
@@ -363,66 +350,18 @@ public class UI2048 {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private void cargarRanking() {
-		try {
-			ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("ranking.txt"));
-			ranking = (List<Map.Entry<String, Integer>>) inputStream.readObject();
-			inputStream.close();
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void guardarRanking() {
-		try {
-			ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("ranking.txt"));
-			outputStream.writeObject(ranking);
-			outputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	private void mostrarRanking() {
-		// Ordenar la lista en orden descendente según los valores (puntajes)
-		ranking.sort(Map.Entry.<String, Integer>comparingByValue().reversed());
-
-		// Construir la cadena de texto para mostrar el ranking
-		StringBuilder rankingString = new StringBuilder();
-		int position = 1;
-		for (Map.Entry<String, Integer> entry : ranking) {
-			rankingString.append(position).append(". ").append(entry.getKey()).append(": ").append(entry.getValue())
-					.append("\n");
-			position++;
-		}
-
-		// Mostrar el ranking
-		JOptionPane.showMessageDialog(frame, rankingString.toString(), "Ranking", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(frame, ranking.mostrarRanking(), "Ranking", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-	private void agregarAlRanking(String nombre, int puntaje) {
-		Map.Entry<String, Integer> ultimoJugador = new AbstractMap.SimpleEntry<>(nombre, puntaje);
-		ranking.add(ultimoJugador);
-
-		// Mantener solo al top 1 y al último jugador si el ranking tiene más de 5
-		// integrantes
-		if (ranking.size() > 5) {
-			Map.Entry<String, Integer> top1 = ranking.get(0);
-			ranking.clear();
-			ranking.add(top1);
-			ranking.add(ultimoJugador);
-		}
-		guardarRanking(); // Guardar el ranking actualizado
-	}
 
 	private void consultarNombreParaRanking() {
 		String nombreJugador = JOptionPane.showInputDialog(frame, "Ingresa tu nombre:");
-		if(nombreJugador==null) {
+		if(nombreJugador==null || nombreJugador.trim().isEmpty()) {
 			System.exit(0);
 		}
-		agregarAlRanking(nombreJugador, juego2048.obtenerPuntosInt());
-		guardarRanking();
+		ranking.agregarAlRanking(nombreJugador, juego2048.obtenerPuntosInt());
+		ranking.guardarRanking();
 	}
 
 }
