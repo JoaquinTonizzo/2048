@@ -78,7 +78,7 @@ public class UI2048 {
 		// Inicializo el juego
 
 		// VENTANA
-		frame = new JFrame(); // Creo la ventana
+		frame = new JFrame(); 
 		frame.setTitle("Juego 2048");
 		frame.setBounds(100, 100, 400, 500); // (PosicionX, PosicionY, Ancho, Altura)
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Para que la aplicacion se cierre correctamente cuando
