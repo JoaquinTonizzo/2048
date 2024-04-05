@@ -3,15 +3,12 @@ package interfaz;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -20,10 +17,8 @@ import java.awt.event.WindowEvent;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
-
 import java.awt.Color;
 import java.awt.Dimension;
-
 import logica.Juego2048;
 import logica.Ranking;
 
@@ -69,107 +64,43 @@ public class UI2048 {
 	private void iniciarMenu() {
 		// Inicializo el juego
 
-		// VENTANA
-		frame = new JFrame(); 
-		frame.setTitle("Juego 2048");
-		frame.setBounds(100, 100, 400, 500); // (PosicionX, PosicionY, Ancho, Altura)
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Para que la aplicacion se cierre correctamente cuando el usuario la quita
-		frame.setResizable(false); // Evito que lo puedan redimensionar
+		setearVentana("Menu 2048");
 		this.ranking = new Ranking();
-		
-		// Panel principal
+		ranking.cargarRanking();
+
 		JPanel panelPrincipal = new JPanel();
 		panelPrincipal.setBackground(new Color(0xEDE0C8)); // Color 4
 		frame.getContentPane().add(panelPrincipal, BorderLayout.CENTER);
 		panelPrincipal.setLayout(new BorderLayout(0, 0));
 
-		// Panel de título
 		JLabel lblTitulo = new JLabel("2048");
 		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 150));
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 		panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
 
-		// Panel de botones
 		JPanel panelBotones = new JPanel();
 		panelBotones.setBackground(new Color(0xEDE0C8));
 		panelPrincipal.add(panelBotones, BorderLayout.CENTER);
 		panelBotones.setLayout(new GridLayout(3, 1, 0, 15));
 
-		// Botón Jugar
-		JButton btnJugar = new JButton("Jugar");
-		btnJugar.setPreferredSize(new Dimension(150, 50)); // Tamaño ajustado
-		btnJugar.setBackground(new Color(0xF59563));
-		btnJugar.setForeground(new Color(0xFFFFFF));
-		btnJugar.setFont(new Font("Tahoma", Font.BOLD, 20)); // Fuente más grande
-		btnJugar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				frame.setVisible(false);
-				iniciarJuego();
-			}
-		});
-		panelBotones.add(btnJugar);
-	
-		ranking.cargarRanking();
-		// Botón Ranking
-		JButton btnRanking = new JButton("Ranking");
-		btnRanking.setPreferredSize(new Dimension(150, 50)); // Tamaño ajustado
-		btnRanking.setBackground(new Color(0xEDC850));
-		btnRanking.setForeground(new Color(0xFFFFFF));
-		btnRanking.setFont(new Font("Tahoma", Font.BOLD, 20)); // Fuente más grande
-		btnRanking.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				mostrarRanking();
-			}
-		});
-		panelBotones.add(btnRanking);
-
-		// Botón Salir
-		JButton btnSalir = new JButton("Salir");
-		btnSalir.setPreferredSize(new Dimension(150, 50)); // Tamaño ajustado
-		btnSalir.setBackground(new Color(0xF65E3B));
-		btnSalir.setForeground(new Color(0xFFFFFF));
-		btnSalir.setFont(new Font("Tahoma", Font.BOLD, 20)); // Fuente más grande
-		btnSalir.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ranking.guardarRanking();
-				System.exit(0);
-			}
-		});
-		panelBotones.add(btnSalir);
-
-		// Centrar la ventana en la pantalla
-		frame.setLocationRelativeTo(null);
-		// Mostrar la ventana
-		frame.setVisible(true);
-		
-		frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                ranking.guardarRanking(); 
-            }
-        });
+		agregarBoton(panelBotones, "Jugar", new Color(0xF59563), Color.WHITE, e -> iniciarJuego());
+		agregarBoton(panelBotones, "Ranking", new Color(0xEDC850), Color.WHITE, e -> mostrarRanking());
+		agregarBoton(panelBotones, "Salir", new Color(0xF65E3B), Color.WHITE, e -> salirDelJuego());
 	}
 
 	private void iniciarJuego() {
-		// Inicializo el juego
 
 		juego2048 = new Juego2048();
 		movimientoProcesado = false;
 
-		// VENTANA
-		frame = new JFrame(); // Creo la ventana
-		frame.setBounds(100, 100, 400, 500); // (posicionx,PosicionY,ancho,altura)
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Para que la aplicacion se cierre correctamente cuando
-																// el usuario la quita
-		frame.setTitle("Juego 2048");
-		frame.setResizable(false);// Evito que lo puedan redimenzionar
-		frame.setLocationRelativeTo(null); // Centrar la ventana en la pantalla
+		setearVentana("Juego 2048");
 
 		// PANEL SUPERIOR
 		JPanel panelSuperior = new JPanel();
 		panelSuperior.setPreferredSize(new Dimension(frame.getWidth(), 100)); // Establecer la altura del panel superior
 		panelSuperior.setBackground(new Color(250, 248, 239));
-		frame.getContentPane().add(panelSuperior, BorderLayout.NORTH); // Agrego el panel a la ventana, en la parte superior (con borderlayout)
+		frame.getContentPane().add(panelSuperior, BorderLayout.NORTH); // Agrego el panel a la ventana, en la parte
+																		// superior (con borderlayout)
 		panelSuperior.setLayout(null);
 
 		// PANEL PUNTAJE
@@ -222,6 +153,91 @@ public class UI2048 {
 		frame.getContentPane().add(panelMatriz, BorderLayout.CENTER);
 		panelMatriz.setLayout(new GridLayout(4, 4));
 
+		generarCeldas(panelMatriz);
+
+		actualizarValoresEnTablero(juego2048.obtenerTablero());
+
+		detectarTecla();
+	}
+
+	private void detectarTecla() {
+		frame.addKeyListener(new KeyListener() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (!movimientoProcesado) {
+					int direccion = 0;
+					switch (e.getKeyCode()) {
+					case KeyEvent.VK_UP:
+						direccion = 1;
+						break;
+					case KeyEvent.VK_DOWN:
+						direccion = 2;
+						break;
+					case KeyEvent.VK_LEFT:
+						direccion = 3;
+						break;
+					case KeyEvent.VK_RIGHT:
+						direccion = 4;
+						break;
+					}
+					if (direccion != 0) {
+						mover(direccion);
+						movimientoProcesado = true;
+					}
+				}
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				movimientoProcesado = false;
+			}
+		});
+	}
+
+	private void mover(int direccion) {
+		if (juego2048.mover(direccion)) {
+			juego2048.agregarNumero();
+			actualizarValoresEnTablero(juego2048.obtenerTablero());
+			verificarEstadoJuego();
+		}
+	}
+
+	private void setearVentana(String nombreVentana) {
+		frame = new JFrame();
+		frame.setTitle(nombreVentana);
+		frame.setBounds(100, 100, 400, 500);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				ranking.guardarRanking();
+				if (nombreVentana == "Juego 2048") {
+					consultarNombreParaRanking();
+				}
+			}
+		});
+	}
+
+	private void agregarBoton(JPanel panel, String texto, Color colorFondo, Color colorTexto,
+			ActionListener actionListener) {
+		JButton boton = new JButton(texto);
+		boton.setPreferredSize(new Dimension(150, 50));
+		boton.setBackground(colorFondo);
+		boton.setForeground(colorTexto);
+		boton.setFont(new Font("Tahoma", Font.BOLD, 20));
+		boton.addActionListener(actionListener);
+		panel.add(boton);
+	}
+
+	private void generarCeldas(JPanel panelMatriz) {
 		// GENERACION DE CELDAS
 		tableroIG = new JLabel[4][4];
 
@@ -237,71 +253,11 @@ public class UI2048 {
 				panelMatriz.add(tableroIG[fila][columna]); // Agrego cada etiqueta creada al panel.
 			}
 		}
-
-		// Agregar valores a tablero.
-		actualizarValores(juego2048.obtenerTablero());
-
-		frame.addKeyListener(new KeyListener() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (!movimientoProcesado) {
-					switch (e.getKeyCode()) {
-					case KeyEvent.VK_UP:
-						if (juego2048.mover(1)) {
-							juego2048.agregarNumero();
-							actualizarValores(juego2048.obtenerTablero());
-							verificarEstadoJuego();
-						}
-						break;
-					case KeyEvent.VK_DOWN:
-						if (juego2048.mover(2)) {
-							juego2048.agregarNumero();
-							actualizarValores(juego2048.obtenerTablero());
-							verificarEstadoJuego();
-						}
-						break;
-					case KeyEvent.VK_LEFT:
-						if (juego2048.mover(3)) {
-							juego2048.agregarNumero();
-							actualizarValores(juego2048.obtenerTablero());
-							verificarEstadoJuego();
-						}
-						break;
-					case KeyEvent.VK_RIGHT:
-						if (juego2048.mover(4)) {
-							juego2048.agregarNumero();
-							actualizarValores(juego2048.obtenerTablero());
-							verificarEstadoJuego();
-						}
-						break;
-					}
-					movimientoProcesado = true;
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				movimientoProcesado = false;
-			}
-		});
-
-		frame.setVisible(true);
-		
-		frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-            	consultarNombreParaRanking();
-            }
-        });
 	}
 
-	// ACTUALIZACION DE LOS VALORES DE LAS CELDAS
-	private void actualizarValores(int[][] tablero) {
-		// Recorro el tablero para obtener sus valores y agregarlos a la interfaz grafica
+	private void actualizarValoresEnTablero(int[][] tablero) {
+		// Recorro el tablero para obtener sus valores y agregarlos a la interfaz
+		// grafica
 		for (int fila = 0; fila < 4; fila++) {
 			for (int columna = 0; columna < 4; columna++) {
 				if (tablero[fila][columna] == 0) {
@@ -339,13 +295,13 @@ public class UI2048 {
 				new String[] { "Volver a jugar", "Salir" }, "Volver a jugar");
 		if (choice == JOptionPane.YES_OPTION) {
 			consultarNombreParaRanking();
-			juego2048.reiniciarJuego();			
+			juego2048.reiniciarJuego();
 			valorPuntaje.setText("0");
 			nroTurno.setText("0");
-			actualizarValores(juego2048.obtenerTablero());
+			actualizarValoresEnTablero(juego2048.obtenerTablero());
 		} else {
 			consultarNombreParaRanking();
-			System.exit(0);
+			salirDelJuego();
 		}
 	}
 
@@ -353,14 +309,18 @@ public class UI2048 {
 		JOptionPane.showMessageDialog(frame, ranking.mostrarRanking(), "Ranking", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-
 	private void consultarNombreParaRanking() {
 		String nombreJugador = JOptionPane.showInputDialog(frame, "Ingresa tu nombre:");
-		if(nombreJugador==null || nombreJugador.trim().isEmpty()) {
+		if (nombreJugador == null || nombreJugador.trim().isEmpty()) {
 			System.exit(0);
 		}
 		ranking.agregarAlRanking(nombreJugador, juego2048.obtenerPuntosInt());
 		ranking.guardarRanking();
+	}
+
+	private void salirDelJuego() {
+		ranking.guardarRanking();
+		System.exit(0);
 	}
 
 }
