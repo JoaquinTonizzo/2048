@@ -89,21 +89,20 @@ public class UI2048 {
 	}
 
 	private void iniciarJuego() {
+		frame.setVisible(false); //Cierra la ventana del menu
 
 		juego2048 = new Juego2048();
 		movimientoProcesado = false;
 
 		setearVentana("Juego 2048");
 
-		// PANEL SUPERIOR
 		JPanel panelSuperior = new JPanel();
-		panelSuperior.setPreferredSize(new Dimension(frame.getWidth(), 100)); // Establecer la altura del panel superior
+		panelSuperior.setPreferredSize(new Dimension(frame.getWidth(), 100)); 
 		panelSuperior.setBackground(new Color(250, 248, 239));
-		frame.getContentPane().add(panelSuperior, BorderLayout.NORTH); // Agrego el panel a la ventana, en la parte
-																		// superior (con borderlayout)
+		frame.getContentPane().add(panelSuperior, BorderLayout.NORTH); 
 		panelSuperior.setLayout(null);
 
-		// PANEL PUNTAJE
+	
 		JPanel panelPuntaje = new JPanel();
 		panelPuntaje.setBounds(219, 22, 68, 53);
 		panelSuperior.add(panelPuntaje);
@@ -121,7 +120,6 @@ public class UI2048 {
 		valorPuntaje.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panelPuntaje.add(valorPuntaje);
 
-		// PANEL TURNO
 		JPanel panelturno = new JPanel();
 		panelturno.setBounds(297, 22, 68, 53);
 		panelSuperior.add(panelturno);
@@ -139,14 +137,12 @@ public class UI2048 {
 		nroTurno.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panelturno.add(nroTurno);
 
-		// TITULO 2048 JLABEL
 		JLabel titulo2048 = new JLabel("2048");
 		titulo2048.setForeground(new Color(119, 110, 101));
 		titulo2048.setFont(new Font("Tahoma", Font.BOLD, 56));
 		titulo2048.setBounds(10, 0, 156, 96);
 		panelSuperior.add(titulo2048);
 
-		// PANEL MATRIZ-JUEGO
 		JPanel panelMatriz = new JPanel();
 		panelMatriz.setBorder(new LineBorder(new Color(187, 173, 160), 4));
 		panelMatriz.setBackground(new Color(187, 173, 160));
