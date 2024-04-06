@@ -9,6 +9,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import java.awt.GridLayout;
+import java.awt.LayoutManager;
+import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -62,26 +64,18 @@ public class UI2048 {
 	}
 
 	private void iniciarMenu() {
-		// Inicializo el juego
-
 		setearVentana("Menu 2048");
 		this.ranking = new Ranking();
 		ranking.cargarRanking();
 
-		JPanel panelPrincipal = new JPanel();
-		panelPrincipal.setBackground(new Color(0xEDE0C8)); // Color 4
+		JPanel panelPrincipal = crearPanel(new Color(0xEDE0C8), new BorderLayout(0, 0));
 		frame.getContentPane().add(panelPrincipal, BorderLayout.CENTER);
-		panelPrincipal.setLayout(new BorderLayout(0, 0));
 
-		JLabel lblTitulo = new JLabel("2048");
-		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 150));
-		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel lblTitulo = crearJLabel("2048", Color.getColor("0xEDC22E"), new Font("Tahoma", Font.BOLD, 150), SwingConstants.CENTER);
 		panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
 
-		JPanel panelBotones = new JPanel();
-		panelBotones.setBackground(new Color(0xEDE0C8));
+		JPanel panelBotones = crearPanel(new Color(0xEDE0C8), new GridLayout(3, 1, 0, 15));
 		panelPrincipal.add(panelBotones, BorderLayout.CENTER);
-		panelBotones.setLayout(new GridLayout(3, 1, 0, 15));
 
 		agregarBoton(panelBotones, "Jugar", new Color(0xF59563), Color.WHITE, e -> iniciarJuego());
 		agregarBoton(panelBotones, "Ranking", new Color(0xEDC850), Color.WHITE, e -> mostrarRanking());
@@ -89,71 +83,53 @@ public class UI2048 {
 	}
 
 	private void iniciarJuego() {
-		frame.setVisible(false); //Cierra la ventana del menu
+		frame.setVisible(false); // Cierra la ventana del menu
 
 		juego2048 = new Juego2048();
 		movimientoProcesado = false;
 
 		setearVentana("Juego 2048");
 
-		JPanel panelSuperior = new JPanel();
-		panelSuperior.setPreferredSize(new Dimension(frame.getWidth(), 100)); 
-		panelSuperior.setBackground(new Color(250, 248, 239));
-		frame.getContentPane().add(panelSuperior, BorderLayout.NORTH); 
-		panelSuperior.setLayout(null);
+		JPanel panelSuperior = crearPanel(new Color(250, 248, 239), new Dimension(frame.getWidth(), 100), null);
+		frame.getContentPane().add(panelSuperior, BorderLayout.NORTH);
 
-	
-		JPanel panelPuntaje = new JPanel();
-		panelPuntaje.setBounds(219, 22, 68, 53);
+		JPanel panelPuntaje = crearPanel(new Color(205, 193, 180), new Dimension(68, 53), new Point(219, 22),
+				new FlowLayout(FlowLayout.CENTER, 5, 5));
 		panelSuperior.add(panelPuntaje);
-		panelPuntaje.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		panelPuntaje.setBackground(new Color(205, 193, 180));
 
-		JLabel puntaje = new JLabel("Puntaje");
-		puntaje.setForeground(new Color(250, 248, 239));
-		puntaje.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panelPuntaje.add(puntaje);
-		puntaje.setHorizontalAlignment(SwingConstants.CENTER);
-
-		valorPuntaje = new JLabel(juego2048.obtenerPuntosString());
-		valorPuntaje.setForeground(new Color(255, 255, 255));
-		valorPuntaje.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panelPuntaje.add(valorPuntaje);
-
-		JPanel panelturno = new JPanel();
-		panelturno.setBounds(297, 22, 68, 53);
-		panelSuperior.add(panelturno);
-		panelturno.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		panelturno.setBackground(new Color(205, 193, 180));
-
-		JLabel Turno = new JLabel("N-Turno");
-		Turno.setForeground(new Color(250, 248, 239));
-		Turno.setHorizontalAlignment(SwingConstants.CENTER);
-		Turno.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panelturno.add(Turno);
-
-		nroTurno = new JLabel(juego2048.obtenerTurno());
-		nroTurno.setForeground(new Color(255, 255, 255));
-		nroTurno.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panelturno.add(nroTurno);
-
-		JLabel titulo2048 = new JLabel("2048");
-		titulo2048.setForeground(new Color(119, 110, 101));
-		titulo2048.setFont(new Font("Tahoma", Font.BOLD, 56));
-		titulo2048.setBounds(10, 0, 156, 96);
-		panelSuperior.add(titulo2048);
-
-		JPanel panelMatriz = new JPanel();
+		JPanel panelTurno = crearPanel(new Color(205, 193, 180), new Dimension(68, 53), new Point(297, 22),
+				new FlowLayout(FlowLayout.CENTER, 5, 5));
+		panelSuperior.add(panelTurno);
+		
+		JPanel panelMatriz = crearPanel(new Color(187, 173, 160), new GridLayout(4, 4));
 		panelMatriz.setBorder(new LineBorder(new Color(187, 173, 160), 4));
-		panelMatriz.setBackground(new Color(187, 173, 160));
 		frame.getContentPane().add(panelMatriz, BorderLayout.CENTER);
-		panelMatriz.setLayout(new GridLayout(4, 4));
+		
+		setearJLabels(panelSuperior, panelPuntaje, panelTurno);	
 
 		generarCeldas(panelMatriz);
 
 		actualizarValoresEnTablero(juego2048.obtenerTablero());
 
 		detectarTecla();
+	}
+
+	private void setearJLabels(JPanel panelSuperior, JPanel panelPuntaje, JPanel panelTurno) {
+		JLabel puntaje = crearJLabel("Puntaje", new Color(250, 248, 239), new Font("Tahoma", Font.BOLD, 14), SwingConstants.CENTER);
+	    panelPuntaje.add(puntaje);
+
+	    valorPuntaje = crearJLabel(juego2048.obtenerPuntosString(), new Color(255, 255, 255), new Font("Tahoma", Font.BOLD, 14), SwingConstants.CENTER);
+	    panelPuntaje.add(valorPuntaje);
+
+	    JLabel lblTurno = crearJLabel("N-Turno", new Color(250, 248, 239), new Font("Tahoma", Font.BOLD, 14), SwingConstants.CENTER);
+	    panelTurno.add(lblTurno);
+
+	    nroTurno = crearJLabel(juego2048.obtenerTurno(), new Color(255, 255, 255), new Font("Tahoma", Font.BOLD, 14), SwingConstants.CENTER);
+	    panelTurno.add(nroTurno);
+
+	    JLabel titulo2048 = crearJLabel("2048", new Color(119, 110, 101), new Font("Tahoma", Font.BOLD, 56), SwingConstants.CENTER);
+	    titulo2048.setBounds(10, 0, 156, 96);
+	    panelSuperior.add(titulo2048);
 	}
 
 	private void detectarTecla() {
@@ -220,6 +196,33 @@ public class UI2048 {
 				}
 			}
 		});
+	}
+	
+	private JLabel crearJLabel(String texto, Color colorTexto, Font fuente, int alineacion) {
+	    JLabel label = new JLabel(texto);
+	    label.setForeground(colorTexto);
+	    label.setFont(fuente);
+	    label.setHorizontalAlignment(alineacion);
+	    return label;
+	}
+
+	private JPanel crearPanel(Color colorFondo, LayoutManager layoutManager) {
+		JPanel panel = new JPanel();
+		panel.setBackground(colorFondo);
+		panel.setLayout(layoutManager);
+		return panel;
+	}
+
+	private JPanel crearPanel(Color colorFondo, Dimension dimension, LayoutManager layoutManager) {
+		JPanel panel = crearPanel(colorFondo, layoutManager);
+		panel.setPreferredSize(dimension);
+		return panel;
+	}
+
+	private JPanel crearPanel(Color colorFondo, Dimension dimension, Point posicion, LayoutManager layoutManager) {
+		JPanel panel = crearPanel(colorFondo, dimension, layoutManager);
+		panel.setBounds(posicion.x, posicion.y, dimension.width, dimension.height);
+		return panel;
 	}
 
 	private void agregarBoton(JPanel panel, String texto, Color colorFondo, Color colorTexto,

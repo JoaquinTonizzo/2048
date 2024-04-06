@@ -161,7 +161,7 @@ public class Juego2048 {
 		for (int fila = 0; fila < TAMANO; fila++) {
 			for (int columna = 0; columna < TAMANO; columna++) {
 				if (tablero[fila][columna] == 2048) {
-					return true; // Se llegó el valor 2048
+					return true; 
 				}
 			}
 		}
