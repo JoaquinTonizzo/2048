@@ -1,4 +1,4 @@
-# Trabajo Práctico 1: 2048 - Programación III 🔢
+# Trabajo Práctico 1 - Programación III
 
 ## Descripción 🎮
 
